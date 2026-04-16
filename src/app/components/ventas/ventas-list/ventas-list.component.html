@@ -1,0 +1,128 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold text-warning mb-0"><i class="bi bi-cart3 me-2"></i>Ventas</h2>
+    <small class="text-muted">CRUD 3 – Entidad Adicional (relaciona Clientes y Productos)</small>
+  </div>
+  <a routerLink="/ventas/nueva" class="btn btn-warning">
+    <i class="bi bi-cart-plus me-1"></i>Nueva Venta
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-0 pt-3 d-flex align-items-center gap-2">
+    <div class="input-group search-box">
+      <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+      <input type="text" class="form-control border-start-0" placeholder="Buscar por cliente o #ID..."
+        [(ngModel)]="busqueda" (ngModelChange)="filtrar()">
+    </div>
+    <span class="text-muted ms-2 small">{{ filtradas.length }} registro(s)</span>
+  </div>
+  <div class="card-body p-0">
+    <div *ngIf="loading" class="text-center py-5"><div class="spinner-border text-warning"></div></div>
+
+    <div *ngIf="!loading && filtradas.length === 0" class="text-center text-muted py-5">
+      <i class="bi bi-cart-x fs-1 d-block mb-2"></i>No hay ventas registradas.
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading && filtradas.length > 0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>#ID</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Productos</th>
+            <th>Total (Bs.)</th>
+            <th>Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of filtradas">
+            <td class="fw-semibold">#{{ v.id }}</td>
+            <td>{{ v.nombreCliente }}</td>
+            <td>{{ v.fecha | date:'dd/MM/yyyy' }}</td>
+            <td><span class="badge bg-secondary">{{ v.detalles.length }} ítem(s)</span></td>
+            <td class="fw-bold text-success">{{ v.total | number:'1.2-2' }}</td>
+            <td><span class="badge" [ngClass]="badgeClass(v.estado)">{{ v.estado | titlecase }}</span></td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-info me-1" title="Ver detalle"
+                (click)="verDetalle(v)" data-bs-toggle="modal" data-bs-target="#modalDetalle">
+                <i class="bi bi-eye"></i>
+              </button>
+              <a [routerLink]="['/ventas/editar', v.id]" class="btn btn-sm btn-outline-warning me-1">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <button class="btn btn-sm btn-outline-danger" (click)="confirmarEliminar(v)"
+                data-bs-toggle="modal" data-bs-target="#modalEliminarVenta">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Detalle -->
+<div class="modal fade" id="modalDetalle" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" *ngIf="ventaDetalle">
+      <div class="modal-header bg-warning bg-opacity-10 border-0">
+        <h5 class="modal-title fw-bold"><i class="bi bi-receipt me-2"></i>Detalle de Venta #{{ ventaDetalle.id }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-3">
+          <div class="col-sm-6"><strong>Cliente:</strong> {{ ventaDetalle.nombreCliente }}</div>
+          <div class="col-sm-3"><strong>Fecha:</strong> {{ ventaDetalle.fecha | date:'dd/MM/yyyy' }}</div>
+          <div class="col-sm-3"><strong>Estado:</strong>
+            <span class="badge ms-1" [ngClass]="badgeClass(ventaDetalle.estado)">{{ ventaDetalle.estado | titlecase }}</span>
+          </div>
+        </div>
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr><th>Producto</th><th>Cant.</th><th>P. Unitario</th><th>Subtotal</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of ventaDetalle.detalles">
+              <td>{{ d.nombreProducto }}</td>
+              <td>{{ d.cantidad }}</td>
+              <td>Bs. {{ d.precioUnitario | number:'1.2-2' }}</td>
+              <td class="fw-semibold">Bs. {{ d.subtotal | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="table-warning">
+              <td colspan="3" class="text-end fw-bold">TOTAL:</td>
+              <td class="fw-bold">Bs. {{ ventaDetalle.total | number:'1.2-2' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal eliminar -->
+<div class="modal fade" id="modalEliminarVenta" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">¿Eliminar la venta <strong>#{{ ventaAEliminar?.id }}</strong> de {{ ventaAEliminar?.nombreCliente }}?</div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="eliminar()">
+          <i class="bi bi-trash me-1"></i>Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold text-success mb-0"><i class="bi bi-people me-2"></i>Clientes</h2>
+    <small class="text-muted">CRUD 2 – Entidad Relacionada</small>
+  </div>
+  <a routerLink="/clientes/nuevo" class="btn btn-success">
+    <i class="bi bi-person-plus me-1"></i>Nuevo Cliente
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-0 pt-3 d-flex align-items-center gap-2">
+    <div class="input-group search-box">
+      <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+      <input type="text" class="form-control border-start-0" placeholder="Buscar por nombre o email..."
+        [(ngModel)]="busqueda" (ngModelChange)="filtrar()">
+    </div>
+    <span class="text-muted ms-2 small">{{ filtrados.length }} registro(s)</span>
+  </div>
+  <div class="card-body p-0">
+    <div *ngIf="loading" class="text-center py-5"><div class="spinner-border text-success"></div></div>
+
+    <div *ngIf="!loading && filtrados.length === 0" class="text-center text-muted py-5">
+      <i class="bi bi-person-x fs-1 d-block mb-2"></i>No hay clientes registrados.
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading && filtrados.length > 0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Nombre Completo</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of filtrados">
+            <td class="text-muted">{{ c.id }}</td>
+            <td class="fw-semibold">{{ c.nombre }} {{ c.apellido }}</td>
+            <td><a [href]="'mailto:' + c.email" class="text-decoration-none">{{ c.email }}</a></td>
+            <td>{{ c.telefono }}</td>
+            <td class="text-muted small">{{ c.direccion }}</td>
+            <td class="text-center">
+              <a [routerLink]="['/clientes/editar', c.id]" class="btn btn-sm btn-outline-warning me-1">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <button class="btn btn-sm btn-outline-danger" (click)="confirmarEliminar(c)"
+                data-bs-toggle="modal" data-bs-target="#modalEliminarCliente">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal eliminar -->
+<div class="modal fade" id="modalEliminarCliente" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        ¿Eliminar al cliente <strong>{{ clienteAEliminar?.nombre }} {{ clienteAEliminar?.apellido }}</strong>?
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="eliminar()">
+          <i class="bi bi-trash me-1"></i>Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

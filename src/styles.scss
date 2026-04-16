@@ -1,0 +1,27 @@
+body {
+  background-color: #f4f6fb;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.btn {
+  border-radius: 8px;
+}
+
+.table th {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6c757d;
+}
+
+.form-control, .form-select {
+  border-radius: 8px;
+}
+
+.navbar {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+}
