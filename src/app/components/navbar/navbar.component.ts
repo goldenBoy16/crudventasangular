@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
       <div class="container-fluid">
         <a class="navbar-brand fw-bold" routerLink="/dashboard">
-          <i class="bi bi-shop me-2"></i>SistemaVentas
+          <i class="bi bi-shop me-2"></i>Tienda doña "GREGO"
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
           <span class="navbar-toggler-icon"></span>
