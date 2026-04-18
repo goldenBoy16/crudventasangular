@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, CommonModule],
   template: `
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow" style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);">
       <div class="container-fluid">
         <a class="navbar-brand fw-bold" routerLink="/dashboard">
           <i class="bi bi-shop me-2"></i>Tienda doña "GREGO"
